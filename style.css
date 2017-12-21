@@ -1,0 +1,50 @@
+body, html {
+  height: 99%;
+  /*width: 100%;*/
+}
+.container{
+    width=100%;
+    height=100%;
+}
+.fixed-left{
+    width: 20%;
+    min-width: 20%;
+    height: 100%;
+    resize: horizontal;
+    overflow: auto;
+    float: left;
+}
+.flex-item{
+    /*flex-grow: 1;
+    position: absolute;
+    height: 100%;
+    width: 100%;*/
+}
+#map-canvas {
+    margin-left: 20%;
+    height: 100%;
+}
+table {
+  font-family: verdana, sans-serif;
+  font-size: 10px;
+  color: #000000;
+  font-style: normal;
+  font-variant: normal;
+  letter-spacing: 0px;
+  line-height: 15px;
+  white-space: nowrap;
+}
+
+th {
+  text-align: center;
+  font-weight: bold;
+}
+
+td > a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/*tr:hover{
+ background: #ffcc99;
+}*/
