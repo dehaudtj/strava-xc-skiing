@@ -1,11 +1,65 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Strava's cross-country skiing segments</title>
+<title>Strava XC-Skiing Segments</title>
 <meta charset="utf-8" />
+<meta name="author" content="Julien Dehaudt">
+<meta name="description" content="Strava's segments for cross-country skiing around Grenoble, RA, France">
 <link rel="icon" type="image/x-icon" href="favicon.ico" />
 <link rel="stylesheet" href="style.css" />
 <link rel="stylesheet" href="spinner.css" />
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+var minSelEffort=null,
+    maxSelEffort=null,
+    minSelDist=null,
+    maxSelDist=null;
+var nameFilter="";
+
+  $(function() {
+    $("#dist-slider-range").slider({                                                                
+      range: true,
+      /*min: 0,
+      max: 500,                                                                                        
+      values: [75, 300],*/
+      slide: function(event, ui) {
+        $("#dist").val(ui.values[0] + " - " + ui.values[1]);
+        minSelDist=ui.values[0]*1000;
+        maxSelDist=ui.values[1]*1000;
+      },                                                                                               
+      stop: function(event, ui) {                                                                      
+        load();
+      }
+    });
+    $("#dist").val($("#dist-slider-range").slider("values", 0) + " - " + $("#dist-slider-range").slider("values", 1));                                                                               
+
+    $("#efforts-slider-range").slider({
+      range: true,
+      /*min: 0,
+      max: 500,
+      values: [75, 300],*/
+      slide: function(event, ui) {
+        $("#efforts").val(ui.values[0] + " - " + ui.values[1]);
+        minSelEffort=ui.values[0];
+        maxSelEffort=ui.values[1];
+      },
+      stop: function(event, ui) {
+        load();
+      }
+    });
+    $("#efforts").val($("#efforts-slider-range").slider("values", 0) + " - " + $("#efforts-slider-range").slider("values", 1));
+  } );
+
+function setSliderValues(id, min, max, values) {
+   $(id).val(values[0] + " - " + values[1]);
+   $(id+"-slider-range").slider("option", "min", min);
+   $(id+"-slider-range").slider("option", "max", max);
+   $(id+"-slider-range").slider("option", "values", values);
+}
+
+</script>
 </head>
 <body>
 <div class="spinner" id="progress">
@@ -16,8 +70,19 @@
 <section class="container" style="height:100%; width:100%;">
   <div class="fixed-left">
   <div class="filters">
-     <p>Filters</p>
-     <input type="range" value="15" max="50" min="0" step"1"> 
+<!--     Filters
+     <input class="slider" type="range" value="15" max="50" min="0" step"1"> -->
+    <p>
+       <label for="amount">Distance:</label>
+       <input type="text" id="dist" readonly style="border:0; color:#f6931f; font-weight:bold; width=90%">
+    </p> 
+    <div id="dist-slider-range"></div>
+
+    <p>
+       <label for="amount">Efforts:</label>
+       <input type="text" id="efforts" readonly style="border:0; color:#f6931f; font-weight:bold; width=90%">
+    </p>
+    <div id="efforts-slider-range"></div>
   </div>
   <table id="table">
     <thead>
@@ -131,7 +196,16 @@ function load() {
    var swlat = map.getBounds().getSouthWest().lat();
    var swlng = map.getBounds().getSouthWest().lng();
 
-   Get("json_req.php?bounds="+nelat+","+nelng+","+swlat+","+swlng, function(json) {
+   Get("json_req.php?minEffort="+minSelEffort+
+                   "&maxEffort="+maxSelEffort+
+                   "&minDist="+minSelDist+
+                   "&maxDist="+maxSelDist+
+                   "&name="+nameFilter+
+                   "&bounds="+nelat+","+nelng+","+swlat+","+swlng, function(json) {
+      var minEffort = Number.MAX_SAFE_INTEGER,
+          maxEffort = Number.MIN_SAFE_INTEGER,
+          minDist = Number.MAX_SAFE_INTEGER,
+          maxDist = Number.MIN_SAFE_INTEGER;
       var objs = JSON.parse(json);
       for (var i = 0; i < objs.entries.length; i++) {
           // MAP   
@@ -154,7 +228,27 @@ function load() {
          addLine(objs.entries[i].id, "<a target=\"_blank\" href=\"https://www.strava.com/segments/"+objs.entries[i].id+"\">"+objs.entries[i].name+"</a>", Math.round((objs.entries[i].distance/1000)*100)/100, Math.round(objs.entries[i].total_elevation_gain), objs.entries[i].effort_count);
 
          drawnpolylines.set(objs.entries[i].id, line);
+
+         // SLIDERS
+         if (objs.entries[i].effort_count < minEffort) {
+             minEffort = objs.entries[i].effort_count;
+         }
+         if (objs.entries[i].effort_count > maxEffort) {
+             maxEffort = objs.entries[i].effort_count;
+         }
+         if (objs.entries[i].distance < minDist) {
+             minDist = objs.entries[i].distance;
+         }
+         if (objs.entries[i].distance > maxDist) {
+             maxDist = objs.entries[i].distance;
+         }
+
       }
+      if (minSelEffort == null && maxSelEffort == null)
+	      setSliderValues("#efforts", 0, 10000, [ minEffort, maxEffort]);
+      if (minSelDist == null && maxSelDist == null)
+	      setSliderValues("#dist", 0, 100, [ minDist/1000, maxDist/1000]);
+
       showProgress(false);
    });
 }
