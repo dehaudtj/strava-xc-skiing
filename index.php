@@ -376,6 +376,7 @@ function getMarker(latlng, km) {
            });
            m = new google.maps.Marker({
                  position: new google.maps.LatLng(latlng[0], latlng[1]),
+                 icon: 'images/xc-marker.png',
                  title:city
                });
            drawnmarkers.push(m);
