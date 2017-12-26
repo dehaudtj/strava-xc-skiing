@@ -4,7 +4,8 @@
 <title>Strava XC-Skiing Segments</title>
 <meta charset="utf-8" />
 <meta name="author" content="Julien Dehaudt">
-<meta name="description" content="Strava's segments for cross-country skiing around Grenoble, RA, France">
+<meta name="contact" content="deh<dot>julien<at>gmail<dot>com">
+<meta name="description" content="Strava's application allowing to explore cross-country skiing segments around Grenoble, RA, France">
 <link rel="icon" type="image/x-icon" href="favicon.ico" />
 <link rel="stylesheet" href="style.css" />
 <link rel="stylesheet" href="spinner.css" />
