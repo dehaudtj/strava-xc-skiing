@@ -156,19 +156,16 @@ function stravaOAuth(code, error) {
              function(json) {
                 user = JSON.parse(json);
                 Cookies.set("user-data", JSON.stringify(user), { expires: 365 });
-                cookieCheck();
+		window.location.replace('http://strava.jln-web.fr')
              });
     }
 }
 
 function disconnect() {
-    Post("https://www.strava.com/oauth/deauthorize",
-          "access_token="+user.access_token,
-             function(json) {
-                var user = JSON.parse(json);
-                Cookies.remove("user-data");
-                cookieCheck();
-             });
+    var json = Post("https://www.strava.com/oauth/deauthorize",
+          "access_token="+user.access_token, null);
+    Cookies.remove("user-data");
+    cookieCheck();
 }
 
 function cookieCheck() {
@@ -194,14 +191,21 @@ function Post(url, params, callback) {
     var http = new XMLHttpRequest();
     //var url = "get_data.php";
     //var params = "lorem=ipsum&name=binny";
-    http.open("POST", url, true);
+    http.open("POST", url, callback != null);
     http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    http.onreadystatechange = function() { 
-        if(http.readyState == 4 && http.status == 200) {
-            callback(http.responseText);
+    if (callback != null) {
+        http.onreadystatechange = function() { 
+            if(http.readyState == 4 && http.status == 200) {
+                callback(http.responseText);
+            }
         }
     }
     http.send(params);
+    if (http.status === 200) {
+       return http.responseText;
+    } else {
+       return null;
+    }
 }
 
 function Get(yourUrl, callback) {
