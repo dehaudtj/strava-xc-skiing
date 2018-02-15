@@ -1,9 +1,4 @@
 #!/bin/bash
-# All segments ID from a given activity
-#wget -qO- -x --load-cookies /home/dehaudtj/prj/tmp/stravacookies.txt https://www.strava.com/activities/1304443530 | grep -o '"segment_id":[0-9]*' | sort -u | awk -F':' '{print $2}'
-
-# All activities from segment page
-#wget -qO- -x --load-cookies /home/dehaudtj/prj/tmp/stravacookies.txt https://www.strava.com/segments/14263303 | grep -o '/segment_efforts/[0-9]*'
 
 #set -x
 
@@ -27,9 +22,10 @@ function getLocation()
 	wget -qO- -x --load-cookies $strava_cookies $1 | grep "starting in" | sed -r 's/.*starting in ([a-zA-Z-]*).*/\1/g'
 }
 
+basedir=$(cd `dirname $0` && pwd)
 activity=$1
 strava_base=https://www.strava.com
-strava_cookies=/home/websites/jln-web.fr/strava/scripts/stravacookies.txt
+strava_cookies=$basedir/stravacookies.txt
 default_db=segments.txt
 db=$default_db
 

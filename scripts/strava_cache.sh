@@ -6,7 +6,7 @@ basedir=$(cd `dirname $0` && pwd)
 
 cache_dir="$basedir/.strava"
 base_url="https://www.strava.com/api/v3/segments"
-tocken="6e85810fcd0818587e134a6319e80ef29f6fd047"
+source $basedir/strava_tocken.sh
 update=0
 
 mkdir -p $cache_dir
