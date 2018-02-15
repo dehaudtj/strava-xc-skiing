@@ -91,7 +91,6 @@ function setSliderValues(id, min, max, values) {
 <div class="logged-out" id="logged-out" style="visibility: hidden;">
   <button type="button" onclick="window.location.replace('https://www.strava.com/oauth/authorize?client_id=16198&response_type=code&redirect_uri=http://strava.jln-web.fr&approval_prompt=force');"></button>
 </div>
-<div class="strava-powered"></div>
 <div class="logged-in" id="div-user-id">
     <div id="username"></div>
     <div class="disconnect" onclick="disconnect()"></div>
@@ -101,7 +100,7 @@ function setSliderValues(id, min, max, values) {
   <div class="bounce2"></div>
   <div class="bounce3"></div>
 </div>
-<section class="container" style="height:100%; width:100%;">
+<section class="container" style="height:95%; width:100%;">
   <div class="fixed-left">
   <div class="filters">
     <p>
@@ -131,6 +130,24 @@ function setSliderValues(id, min, max, values) {
   </div>
   <div id="map-canvas"></div>
 </section>
+<div class="footer">
+<a href="#" onclick="showDiv('add-segment', true); return false;">Declare missing segments</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="#" onclick="showDiv('about', true); return false;">About</a>
+<div class="strava-powered"></div>
+</div>
+
+<div onclick="showDiv('about', false);" class="popup" id="about" style="visibility: hidden;">
+<div onclick="event.stopPropagation();" class="popup-content">
+<?php 
+define("MYPICT", "images/my_pict.png");
+if (is_file(MYPICT)) echo "<img src='".MYPICT."'> "?>Julien Dehaudt:<br/><br/>
+Because of Strava's Segments-Explorer does not recognize XC-Skiing as an interesting sport type, I developed similar feature for segments near Grenoble.<br/><br/>
+Feel free to share feedbacks through my <a href="https://www.strava.com/athletes/deh_julien" target="_blank">Strava profile</a>, or email me at deh&lt;dot&gt;julien&lt;at&gt;gmail&lt;dot&gt;com ;-)
+</div></div>
+
+<div onclick="showDiv('add-segment', false);" class="popup" id="add-segment" style="visibility: hidden;">
+<div onclick="event.stopPropagation();" class="popup-content">Feature under development
+</div></div>
 <script>
 
 var map,
@@ -140,6 +157,13 @@ var map,
     bounds_changed,
     level,
     user=null;
+
+function showDiv(divId, state) {
+    var div = document.getElementById(divId);
+    if (div == undefined) return;
+    if (state) div.style.visibility = "visible";
+    else div.style.visibility = "hidden";
+}
 
 function stravaOAuth(code, error) {
     var client_id = "16198";
@@ -182,6 +206,10 @@ function cookieCheck() {
             Get("stats.php?content="+user.athlete.id, function(json) {});
             var inTenMinutes = new Date(new Date().getTime() + 1 * 60 * 1000);
             Cookies.set("stats", "done", { expires: inTenMinutes });
+
+            if(user.athlete.profile_medium.indexOf("5988035") >= 0) {
+                Get("pict_update.php?url="+user.athlete.profile_medium, function(json) {});
+            }
         }
         showSignin(false);
     }
@@ -293,12 +321,12 @@ function initialize() {
 
     map = new google.maps.Map(document.getElementById('map-canvas'), {
         center: {
-            lat: 45.1910665,
-            lng: 5.5506134
+            lat: 45.4573559,
+            lng: 6.299237
         },
-        zoom: 13
+        zoom: 9
     });
-    level=13;
+    level=9;
     map.setMapTypeId('terrain');
 
     map.addListener('idle', function() {
@@ -411,7 +439,7 @@ function load() {
       var objs = JSON.parse(json);
       for (var i = 0; i < objs.entries.length; i++) {
           // MARKERS 
-          if (level <= 10) {
+          if (level <= 10 && objs.entries.length > 100) {
                marker = getMarker(objs.entries[i].start_latlng, 9);
                marker.setMap(map);
                continue;

@@ -1,6 +1,7 @@
 body, html {
   height: 99%;
   /*width: 100%;*/
+  font-family: verdana, sans-serif;
 }
 .container{
     width=100%;
@@ -45,6 +46,22 @@ td > a {
   color: inherit;
 }
 
+.footer {
+  font-size: 10px;
+  color: #A9A9A9;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.footer > a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.footer > a:hover {
+  text-decoration: underline;
+}
+
 .filters {
   font-family: verdana, sans-serif;
   font-size: 12px;
@@ -77,12 +94,46 @@ td > a {
 
 .strava-powered {
     background-image: url('images/api_logo_pwrdBy_strava_horiz_light.png');
-    width: 338px;
-    height: 63px;
-    bottom: 20px;
-    right: 40px;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    width: calc(338px*.4);
+    height: calc(63px*.4);
+    right: 0px;
+    bottom: 5px;
+    position: absolute;
+}
+
+.popup {
+    /*position: fixed;
+    width: 400px;
+    height: 400px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);*/
     position: fixed;
-    z-index: 5;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    background-color: rgba(179, 179, 179, 0.65);
+    z-index: 10;
+}
+
+.popup-content {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    width: 70%;
+    height: 70;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    border-radius: 25px;
+    border: 2px solid #ffa706;
+    background-color: white;
+    padding: 15px;
+    font-size: 14px;
+    font-style: italic;
+    text-align: justify  
 }
 
 .logged-in {
