@@ -38,7 +38,8 @@
    for($i=0; $i<$count; $i++) {
       $segfolder=$segfolders[$i];
       $segdesc=DBPATH.$segfolder."/segment.json";
-      if(is_file($segdesc) && filesize($segdesc)) {
+      $hide=DBPATH.$segfolder."/hide";
+      if(!is_file($hide) && is_file($segdesc) && filesize($segdesc)) {
          $json_content=file_get_contents($segdesc);
          $obj=json_decode($json_content);
 
