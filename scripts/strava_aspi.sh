@@ -14,6 +14,15 @@ function getAllSeg()
 
 function getAct()
 {
+	# get page count, or nothing if only 1 page
+	# wget -qO- -x --load-cookies=$strava_cookies $1 | grep -Eo "[^_]page=[0-9]*" | awk -F'=' '{print $2}' | sort -n | tail -1
+	# remain to loop over pages instead
+	# for page in 1..$page_count
+	# do
+	#   wget -qO- -x --load-cookies $strava_cookies $1/leaderboard?page=$page | grep -o '/segment_efforts/[0-9]*'
+	# done
+	# TO BE TESTED
+	# LIMIT TO MAX COUNT OF PAGES ?!
 	wget -qO- -x --load-cookies $strava_cookies $1 | grep -o '/segment_efforts/[0-9]*'
 }
 
